@@ -26,7 +26,7 @@ public class OrderController
     @PostMapping("/add-order")
     public ResponseEntity<String> addOrder(@RequestBody Order order)
     {
-        String response= orderService.addOrder(order);
+        orderService.addOrder(order);
         return new ResponseEntity<>("New order added successfully", HttpStatus.CREATED);
     }
 
@@ -50,7 +50,8 @@ public class OrderController
     public ResponseEntity<Order> getOrderById(@PathVariable String orderId)
     {
 
-        Order order= orderService.getOrderById(orderId);
+        Order order= null;
+        order=orderService.getOrderById(orderId);
         //order should be returned with an orderId.
 
         return new ResponseEntity<>(order, HttpStatus.CREATED);
@@ -60,7 +61,8 @@ public class OrderController
     public ResponseEntity<DeliveryPartner> getPartnerById(@PathVariable String partnerId)
     {
 
-        DeliveryPartner deliveryPartner = orderService.getPartnerById(partnerId);
+        DeliveryPartner deliveryPartner = null;
+        deliveryPartner=orderService.getPartnerById(partnerId);
 
         //deliveryPartner should contain the value given by partnerId
 
@@ -71,7 +73,7 @@ public class OrderController
     public ResponseEntity<Integer> getOrderCountByPartnerId(@PathVariable String partnerId)
     {
 
-        Integer orderCount = orderService.getOrderCountByPartnerId(partnerId);
+        int orderCount = orderService.getOrderCountByPartnerId(partnerId);
 
         //orderCount should denote the orders given by a partner-id
 
@@ -81,7 +83,8 @@ public class OrderController
     @GetMapping("/get-orders-by-partner-id/{partnerId}")
     public ResponseEntity<List<String>> getOrdersByPartnerId(@PathVariable String partnerId)
     {
-        List<String> orders = orderService.getOrdersByPartnerId(partnerId);
+        List<String> orders = null;
+        orders=orderService.getOrdersByPartnerId(partnerId);
 
         //orders should contain a list of orders by PartnerId
 
@@ -111,7 +114,7 @@ public class OrderController
     public ResponseEntity<Integer> getOrdersLeftAfterGivenTimeByPartnerId(@PathVariable String time, @PathVariable String partnerId)
     {
 
-        Integer countOfOrders = orderService.getOrdersLeftAfterGivenTimeByPartnerId(time, partnerId);
+        int countOfOrders = orderService.getOrdersLeftAfterGivenTimeByPartnerId(time, partnerId);
 
         //countOfOrders that are left after a particular time of a DeliveryPartner
 
