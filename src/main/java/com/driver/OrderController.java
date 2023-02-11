@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class OrderController
 {
     @Autowired
-    OrderService orderService=new OrderService();
+    OrderService orderService=new OrderService();   // without object creation--> the error will come
 
 
     @PostMapping("/add-order")
@@ -100,7 +100,7 @@ public class OrderController
     @GetMapping("/get-count-of-unassigned-orders")
     public ResponseEntity<Integer> getCountOfUnassignedOrders()
     {
-        Integer countOfOrders = orderService.getCountOfUnassignedOrders();
+        int countOfOrders = orderService.getCountOfUnassignedOrders();
 
         //Count of orders that have not been assigned to any DeliveryPartner
 

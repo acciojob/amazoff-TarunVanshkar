@@ -17,6 +17,7 @@ public class OrderRepository
     HashMap<String, DeliveryPartner> partnerMap=new HashMap<>();
 
     HashMap<String, List<Order>> orderPartnerPair=new HashMap<>();   // partnerId as key and list of orderIds
+    int ordersAssigned=0;
 
     public String addOrder(Order order)
     {
@@ -33,6 +34,7 @@ public class OrderRepository
 
     public void addOrderPartnerPair(String orderId, String partnerId)
     {
+        ordersAssigned++;
         //This is basically assigning that order to that partnerId
 
         DeliveryPartner partner = partnerMap.get(partnerId);
@@ -92,7 +94,7 @@ public class OrderRepository
 
     public int getCountOfUnassignedOrders()
     {
-        int count = ordersMap.size()-orderPartnerPair.size();
+        int count = ordersMap.size()-ordersAssigned;
         //Count of orders that have not been assigned to any DeliveryPartner
 
         return count;
@@ -148,6 +150,7 @@ public class OrderRepository
 
         partnerMap.remove(partnerId);
         orderPartnerPair.remove(partnerId);
+        ordersAssigned--;
     }
 
     public void deleteOrderById(String orderId)
@@ -165,6 +168,7 @@ public class OrderRepository
                 currOrders.remove(orderId);
             }
         }
+        ordersAssigned--;
     }
 
 
