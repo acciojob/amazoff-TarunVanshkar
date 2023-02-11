@@ -37,14 +37,29 @@ public class OrderRepository
         ordersAssigned++;
         //This is basically assigning that order to that partnerId
 
-        DeliveryPartner partner = partnerMap.get(partnerId);
-        int orders = partner.getNumberOfOrders()+1;
-        partner.setNumberOfOrders(orders);   // Increased order count of partner
-
         //add in the pair
-        List<Order> currentOrder = orderPartnerPair.getOrDefault(partnerId,new ArrayList<Order>());
-        currentOrder.add(ordersMap.get(orderId));
-        orderPartnerPair.put(partnerId,currentOrder);
+//        List<Order> currentOrder = orderPartnerPair.getOrDefault(partnerId,new ArrayList<Order>());
+//        currentOrder.add(ordersMap.get(orderId));
+//        orderPartnerPair.put(partnerId,currentOrder);
+
+        List<Order> currentOrder=new ArrayList<>();
+        if(orderPartnerPair.containsKey(partnerId))
+        {
+            currentOrder=orderPartnerPair.get(partnerId);
+            currentOrder.add(ordersMap.get(orderId));
+            orderPartnerPair.put(partnerId, currentOrder);
+        }
+        else
+        {
+            //List<Order> currentOrder=new ArrayList<>();
+            currentOrder.add(ordersMap.get(orderId));
+            orderPartnerPair.put(partnerId, currentOrder);
+        }
+
+        DeliveryPartner partner = partnerMap.get(partnerId);
+        partner.setNumberOfOrders(currentOrder.size());
+//        int orders = partner.getNumberOfOrders()+1;
+//        partner.setNumberOfOrders(orders);   // Increased order count of partner
     }
 
     public Order getOrderById(String orderId)
