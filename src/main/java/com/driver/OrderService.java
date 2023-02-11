@@ -14,7 +14,7 @@ import java.util.List;
 public class OrderService
 {
     @Autowired
-    OrderRepository orderRepository;
+    OrderRepository orderRepository=new OrderRepository();
 
     public String addOrder(Order order)
     {
