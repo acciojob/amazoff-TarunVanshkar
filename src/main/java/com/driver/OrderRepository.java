@@ -16,7 +16,7 @@ public class OrderRepository
     HashMap<String, Order> ordersMap=new HashMap<>();    // To store order object with its order id as key
     HashMap<String, DeliveryPartner> partnerMap=new HashMap<>();
 
-    HashMap<String, List<String>> orderPartnerPair=new HashMap<>();   // partnerId as key and list of orderIds
+    HashMap<String, List<Order>> orderPartnerPair=new HashMap<>();   // partnerId as key and list of orderIds
 
     public String addOrder(Order order)
     {
@@ -34,16 +34,15 @@ public class OrderRepository
     public void addOrderPartnerPair(String orderId, String partnerId)
     {
         //This is basically assigning that order to that partnerId
-        if(orderPartnerPair.containsKey(partnerId))
-        {
-            orderPartnerPair.get(partnerId).add(orderId);
-        }
-        else
-        {
-            List<String> orderList=new ArrayList<>();
-            orderList.add(orderId);
-            orderPartnerPair.put(partnerId, orderList);
-        }
+
+        DeliveryPartner partner = partnerMap.get(partnerId);
+        int orders = partner.getNumberOfOrders()+1;
+        partner.setNumberOfOrders(orders);   // Increased order count of partner
+
+        //add in the pair
+        List<Order> currentOrder = orderPartnerPair.getOrDefault(partnerId,new ArrayList<Order>());
+        currentOrder.add(ordersMap.get(orderId));
+        orderPartnerPair.put(partnerId,currentOrder);
     }
 
     public Order getOrderById(String orderId)
@@ -55,27 +54,25 @@ public class OrderRepository
 
     public DeliveryPartner getPartnerById(String partnerId)
     {
-
-        DeliveryPartner deliveryPartner = partnerMap.get(partnerId);
-
         //deliveryPartner should contain the value given by partnerId
 
-        return deliveryPartner;
+        return partnerMap.get(partnerId);
     }
 
     public int getOrderCountByPartnerId(String partnerId)
     {
-
-        Integer orderCount = orderPartnerPair.get(partnerId).size();
-
         //orderCount should denote the orders given by a partner-id
 
-        return orderCount;
+        return partnerMap.get(partnerId).getNumberOfOrders();
     }
 
     public List<String> getOrdersByPartnerId(String partnerId)
     {
-        List<String> orders = orderPartnerPair.get(partnerId);
+        List<String> orders = new ArrayList<>();
+        for(Order currOrder:orderPartnerPair.get(partnerId))
+        {
+            orders.add(currOrder.getId());
+        }
 
         //orders should contain a list of orders by PartnerId
 
@@ -85,9 +82,9 @@ public class OrderRepository
     public List<String> getAllOrders()
     {
         List<String> allOrdersList=new ArrayList<>();
-        for(String currentOrder:ordersMap.keySet())
+        for(Order currentOrder:ordersMap.values())
         {
-            allOrdersList.add(currentOrder);
+            allOrdersList.add(currentOrder.getId());
         }
         //Get all orders
         return allOrdersList;
@@ -95,21 +92,8 @@ public class OrderRepository
 
     public int getCountOfUnassignedOrders()
     {
-        int count = 0;
+        int count = ordersMap.size()-orderPartnerPair.size();
         //Count of orders that have not been assigned to any DeliveryPartner
-
-        for(String currentPartner:orderPartnerPair.keySet())
-        {
-            List<String> currOrderList=orderPartnerPair.get(currentPartner);
-
-            for(String currOrders: currOrderList)
-            {
-               if(!ordersMap.containsKey(currOrders))
-               {
-                   count++;
-               }
-            }
-        }
 
         return count;
     }
@@ -118,12 +102,16 @@ public class OrderRepository
     {
         //Return the time when that partnerId will deliver his last delivery order.
 
-        String time="";
-        List<String> deliveryList=orderPartnerPair.get(partnerId);
-        String lastDeliveryId=deliveryList.get(deliveryList.size()-1);
+        int lastTime=0;
+        for(Order order:orderPartnerPair.get(partnerId))
+        {
+            if(lastTime<order.getDeliveryTime())
+            {
+                lastTime=order.getDeliveryTime();   // hene we will get max time
+            }
+        }
 
-        int minutes=ordersMap.get(lastDeliveryId).getDeliveryTime();
-        time=convertTime(minutes);
+        String time=convertTime(lastTime);
         return time;
     }
 
@@ -133,7 +121,7 @@ public class OrderRepository
         int mins=minutes%60;
 
         String time="";
-        if(hrs<9)
+        if(hrs<=9)
         {
             time+="0"+String.valueOf(hrs)+":";
         }
@@ -171,7 +159,7 @@ public class OrderRepository
 
         for(String currPartnerId: orderPartnerPair.keySet())
         {
-            List<String> currOrders=orderPartnerPair.get(currPartnerId);
+            List<Order> currOrders=orderPartnerPair.get(currPartnerId);
             if(currOrders.contains(orderId))
             {
                 currOrders.remove(orderId);
@@ -187,12 +175,13 @@ public class OrderRepository
 
         //countOfOrders that are left after a particular time of a DeliveryPartner
 
-        int currTime=timeConvertToMinutes(time);
+        int HH = Integer.valueOf(time.substring(0,2));
+        int MM = Integer.valueOf(time.substring(3));
+        int deliveryTime=HH*60+MM;
 
-        List<String> orderList=orderPartnerPair.get(partnerId);
-        for(String order:orderList)
+        for(Order order:orderPartnerPair.get(partnerId))
         {
-            if(ordersMap.get(order).getDeliveryTime()>currTime)
+            if(deliveryTime < order.getDeliveryTime())     // here order.getDeliveryTime() is a required time to order get delivered
             {
                 count++;
             }
@@ -200,12 +189,4 @@ public class OrderRepository
         return count;
     }
 
-    private int timeConvertToMinutes(String deliveryTime)
-    {
-        String []time=deliveryTime.split(":");
-        int hours=Integer.valueOf(time[0]);
-        int minutes=Integer.valueOf(time[1]);
-        int hoursInMinutes=hours*60;
-        return hoursInMinutes+minutes;
-    }
 }
