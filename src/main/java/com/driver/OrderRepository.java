@@ -81,7 +81,12 @@ public class OrderRepository
         //orderCount should denote the orders given by a partner-id
 
         //return partnerMap.get(partnerId).getNumberOfOrders();
-        return orderPartnerPair.get(partnerId).size();
+        int count=0;
+        if(orderPartnerPair.containsKey(partnerId))
+        {
+            count=orderPartnerPair.get(partnerId).size();
+        }
+        return count;
     }
 
     public List<String> getOrdersByPartnerId(String partnerId)
