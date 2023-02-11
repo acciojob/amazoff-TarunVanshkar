@@ -149,8 +149,14 @@ public class OrderRepository
         //And push all his assigned orders to unassigned orders.
 
         partnerMap.remove(partnerId);
+        List<Order> orderList=orderPartnerPair.get(partnerId);
+        for(Order order:orderList)
+        {
+            ordersMap.remove(order);
+            ordersAssigned--;
+        }
         orderPartnerPair.remove(partnerId);
-        ordersAssigned--;
+
     }
 
     public void deleteOrderById(String orderId)
@@ -166,9 +172,10 @@ public class OrderRepository
             if(currOrders.contains(orderId))
             {
                 currOrders.remove(orderId);
+                ordersAssigned--;
             }
         }
-        ordersAssigned--;
+
     }
 
 
