@@ -84,9 +84,9 @@ public class OrderRepository
     public List<String> getAllOrders()
     {
         List<String> allOrdersList=new ArrayList<>();
-        for(Order currentOrder:ordersMap.values())
+        for(String currentOrder:ordersMap.keySet())
         {
-            allOrdersList.add(currentOrder.getId());
+            allOrdersList.add(currentOrder);
         }
         //Get all orders
         return allOrdersList;
