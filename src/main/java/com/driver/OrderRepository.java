@@ -17,6 +17,7 @@ public class OrderRepository
     HashMap<String, DeliveryPartner> partnerMap=new HashMap<>();
 
     HashMap<String, List<Order>> orderPartnerPair=new HashMap<>();   // partnerId as key and list of orderIds
+    HashMap<String, String> orderPartnerMap=new HashMap<>();
     int ordersAssigned=0;
 
     public String addOrder(Order order)
@@ -55,6 +56,7 @@ public class OrderRepository
             currentOrder.add(ordersMap.get(orderId));
             orderPartnerPair.put(partnerId, currentOrder);
         }
+        orderPartnerMap.put(partnerId, orderId);
 
         DeliveryPartner partner = partnerMap.get(partnerId);
         partner.setNumberOfOrders(currentOrder.size());
@@ -170,13 +172,14 @@ public class OrderRepository
         //And push all his assigned orders to unassigned orders.
 
         partnerMap.remove(partnerId);
-        List<Order> orderList=orderPartnerPair.get(partnerId);
+        List<Order> orderList=orderPartnerPair.getOrDefault(partnerId, new ArrayList<>());
         for(Order order:orderList)
         {
             ordersMap.remove(order);
             ordersAssigned--;
         }
         orderPartnerPair.remove(partnerId);
+        orderPartnerMap.remove(partnerId);
 
     }
 
@@ -194,6 +197,11 @@ public class OrderRepository
             {
                 currOrders.remove(orderId);
                 ordersAssigned--;
+            }
+
+            if(orderPartnerMap.containsKey(currPartnerId))
+            {
+                orderPartnerMap.remove(currPartnerId);
             }
         }
 
