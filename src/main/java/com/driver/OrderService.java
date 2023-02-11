@@ -13,7 +13,7 @@ import java.util.List;
 @Service
 public class OrderService
 {
-    @Autowired
+    //@Autowired
     OrderRepository orderRepository=new OrderRepository();
 
     public String addOrder(Order order)

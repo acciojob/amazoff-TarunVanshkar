@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("orders")
 public class OrderController
 {
-    @Autowired
+    //@Autowired
     OrderService orderService=new OrderService();   // without object creation--> the error will come
 
 
