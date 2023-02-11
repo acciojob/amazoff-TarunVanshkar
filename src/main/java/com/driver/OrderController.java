@@ -27,8 +27,7 @@ public class OrderController
     public ResponseEntity<String> addOrder(@RequestBody Order order)
     {
         String response= orderService.addOrder(order);
-        //return new ResponseEntity<>("New order added successfully", HttpStatus.CREATED);
-        return new ResponseEntity<>(response, HttpStatus.CREATED);
+        return new ResponseEntity<>("New order added successfully", HttpStatus.CREATED);
     }
 
     @PostMapping("/add-partner/{partnerId}")

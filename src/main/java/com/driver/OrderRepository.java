@@ -13,15 +13,14 @@ import java.util.Map;
 @Repository
 public class OrderRepository
 {
-    Map<String, Order> ordersMap=new HashMap<String, Order>();    // To store order object with its order id as key
-    Map<String, DeliveryPartner> partnerMap=new HashMap<String, DeliveryPartner>();
+    HashMap<String, Order> ordersMap=new HashMap<>();    // To store order object with its order id as key
+    HashMap<String, DeliveryPartner> partnerMap=new HashMap<>();
 
-    Map<String, List<String>> orderPartnerPair=new HashMap<String, List<String>>();   // partnerId as key and list of orderIds
+    HashMap<String, List<String>> orderPartnerPair=new HashMap<>();   // partnerId as key and list of orderIds
 
     public String addOrder(Order order)
     {
-        String orderId=order.getId();
-        ordersMap.put(orderId, order);
+        ordersMap.put(order.getId(), order);
         return "New order added successfully";
     }
 
@@ -49,10 +48,9 @@ public class OrderRepository
 
     public Order getOrderById(String orderId)
     {
-        Order order= ordersMap.get(orderId);
         //order should be returned with an orderId.
 
-        return order;
+        return ordersMap.get(orderId);
     }
 
     public DeliveryPartner getPartnerById(String partnerId)
