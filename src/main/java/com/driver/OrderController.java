@@ -110,7 +110,9 @@ public class OrderController
         return new ResponseEntity<>(countOfOrders, HttpStatus.CREATED);
     }
 
-    @GetMapping("/get-count-of-orders-left-after-given-time/{partnerId}")
+    //n API 10-> we need to give 2 path variable(time, partnerId) ,
+    // but in Endpoin definition t is @GetMapping("/get-count-of-orders-left-after-given-time/{partnerId}")
+    @GetMapping("/get-count-of-orders-left-after-given-time/{time}/{time}/{partnerId}")
     public ResponseEntity<Integer> getOrdersLeftAfterGivenTimeByPartnerId(@PathVariable String time, @PathVariable String partnerId)
     {
 
