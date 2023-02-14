@@ -5,10 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.bind.annotation.RequestBody;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Repository
 public class OrderRepository
@@ -189,9 +186,10 @@ public class OrderRepository
         List<String> orderList=pairDB.getOrDefault(partnerId, new ArrayList<>());
 
         // Update assignedDB  <orderId, partnerId>
-        for(String currOrder: orderList)
-        {
-            assignedDB.remove(currOrder);
+        ListIterator<String> itr = orderList.listIterator();
+        while(itr.hasNext()) {
+            String str = itr.next();
+            assignedDB.remove(str);
         }
 
         // Update pairDB
@@ -214,14 +212,21 @@ public class OrderRepository
 
         // Remove this orderID from pairDB
         List<String> orderList = pairDB.get(partnerId);
-        for(String currOrder: orderList)
-        {
-            if(currOrder.equals(orderId))
-            {
-                orderList.remove(currOrder);
+//        for(String currOrder: orderList)
+//        {
+//            if(currOrder.equals(orderId))
+//            {
+//                orderList.remove(currOrder);
+//            }
+//        }    // it is giving java.util.ConcurrentModificationException
+
+        ListIterator<String> itr = orderList.listIterator();
+        while(itr.hasNext()) {
+            String str = itr.next();
+            if(str.equals(orderId)) {
+                itr.remove();
             }
         }
-
         // Update the pairDB with deleted orderId
         pairDB.put(partnerId, orderList);
     }
