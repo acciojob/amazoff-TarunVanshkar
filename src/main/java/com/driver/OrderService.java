@@ -16,9 +16,9 @@ public class OrderService
     //@Autowired
     OrderRepository orderRepository=new OrderRepository();
 
-    public String addOrder(Order order)
+    public void addOrder(Order order)
     {
-        return orderRepository.addOrder(order);
+        orderRepository.addOrder(order);
     }
 
     public void addPartner(String partnerId)
